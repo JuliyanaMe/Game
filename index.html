@@ -3,335 +3,175 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Little Dragon's Chocolate Adventure</title>
+    <title>Middle-earth: The Ring Quest</title>
     <style>
       * { box-sizing: border-box; }
       body {
         margin: 0; min-height: 100vh; display: grid; place-items: center;
-        overflow-x: hidden; background: linear-gradient(180deg, #fff0f8, #e6f8ff 55%, #fff5d8);
-        font-family: "Trebuchet MS", Arial, sans-serif; color: #4b2e39;
+        overflow-x: hidden; background: linear-gradient(#d9e8d2, #f3e7c4 58%, #b5c8a4);
+        font-family: Georgia, "Times New Roman", serif; color: #332b20;
       }
-      .hearts { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
-      .heart { position: absolute; bottom: -50px; color: #f5a8ca; opacity: .55; animation: float-up linear infinite; }
-      .heart:nth-child(1) { left: 8%; font-size: 24px; animation-duration: 10s; }
-      .heart:nth-child(2) { left: 23%; font-size: 18px; animation-duration: 13s; animation-delay: 2s; }
-      .heart:nth-child(3) { left: 45%; font-size: 28px; animation-duration: 12s; animation-delay: 1s; }
-      .heart:nth-child(4) { left: 68%; font-size: 20px; animation-duration: 14s; animation-delay: 3s; }
-      .heart:nth-child(5) { left: 88%; font-size: 30px; animation-duration: 11s; animation-delay: 4s; }
-      @keyframes float-up { from { transform: translateY(0) rotate(0); } to { transform: translateY(-115vh) rotate(25deg); } }
-
-      .game-shell { width: min(94vw, 560px); background: rgba(255,255,255,.86); border: 4px solid white; border-radius: 28px; box-shadow: 0 16px 38px rgba(138,99,126,.22); padding: 18px; text-align: center; }
-      h1 { margin: 0 0 6px; font-size: clamp(1.35rem, 5vw, 2rem); }
-      .subtitle { margin: 0 0 10px; color: #805c75; }
-      .score { font-weight: bold; color: #77556d; margin-bottom: 12px; }
-      .scene { position: relative; padding: 22px 12px 12px; border: 7px solid #9a6b55; border-bottom-width: 12px; border-radius: 48% 48% 18px 18px / 32% 32% 18px 18px; background: linear-gradient(#714d68, #a77764 42%, #d69b72 43%, #f6d79a); box-shadow: inset 0 0 0 5px rgba(255,222,179,.48), 0 8px 0 #75513f; transition: background .4s; }
-      .scene.level-two { background: linear-gradient(#30294e, #584064 42%, #805b70 43%, #d69b72); }
-      .cave-sign { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: .78rem; font-weight: bold; color: #fff5d6; white-space: nowrap; letter-spacing: 1px; }
-      .board { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 5px; padding: 9px; border-radius: 16px; background: rgba(255,239,213,.9); }
-      .cell { aspect-ratio: 1; min-width: 0; border-radius: 11px; display: grid; place-items: center; background: linear-gradient(#fff9e9, #f8dcae); font-size: clamp(1.1rem, 6vw, 2rem); box-shadow: inset 0 -3px rgba(148,97,63,.12); }
-      .cell.tree { background: linear-gradient(#d7f0c4, #a8d88d); }
-      .cell.empty { background: linear-gradient(#ffe8c8, #f6d4a0); }
-      .cell.dragon-cell { background: #ffe4ef; }
-      .cell.choco-cell { background: #fff0a8; animation: chocolate-glow 1s ease-in-out infinite alternate; }
-      @keyframes chocolate-glow { to { box-shadow: 0 0 12px #ffd65a; } }
-
-      .dragon-art { position: relative; display: block; width: 40px; height: 38px; border-radius: 48% 48% 44% 44%; background: linear-gradient(145deg,#b8f1b3,#73cf91); border: 2px solid #55a971; box-shadow: 0 3px 0 rgba(53,121,76,.2); animation: dragon-bob 1s ease-in-out infinite alternate; }
-      .dragon-art::before, .dragon-art::after { content: ""; position: absolute; top: -7px; width: 11px; height: 13px; background: #ffb3cb; border: 2px solid #55a971; border-bottom: 0; border-radius: 70% 70% 0 0; }
-      .dragon-art::before { left: 4px; transform: rotate(-15deg); } .dragon-art::after { right: 4px; transform: rotate(15deg); }
-      .eyes { position: absolute; top: 10px; left: 7px; right: 7px; display: flex; justify-content: space-between; }
-      .eye { position: relative; width: 10px; height: 13px; border-radius: 50%; background: white; border: 1px solid #3c4650; animation: blink 4s infinite; transform-origin: center; }
-      .eye:nth-child(2) { animation-delay: .08s; }
-      .eye::before { content: ""; position: absolute; width: 5px; height: 7px; left: 2px; bottom: 1px; border-radius: 50%; background: #273443; }
-      .eye::after { content: ""; position: absolute; width: 3px; height: 3px; left: 2px; top: 1px; border-radius: 50%; background: white; }
-      @keyframes blink { 0%, 42%, 46%, 100% { transform: scaleY(1); } 44% { transform: scaleY(.08); } }
-      .snout { position: absolute; width: 12px; height: 8px; left: 12px; bottom: 4px; border-radius: 50%; background: #d7f7cb; }
-      .snout::after { content: ""; position: absolute; width: 4px; height: 3px; left: 4px; top: 1px; border-radius: 50%; background: #527b65; }
-      .cheek { position: absolute; top: 21px; width: 6px; height: 4px; border-radius: 50%; background: #ff9eb8; }
-      .cheek.left { left: 3px; } .cheek.right { right: 3px; }
-      @keyframes dragon-bob { from { transform: translateY(1px) rotate(-3deg); } to { transform: translateY(-2px) rotate(3deg); } }
-      .message { min-height: 30px; margin-top: 13px; font-weight: bold; color: #7b4651; }
-      .help { margin-top: 6px; font-size: .92rem; color: #61505f; }
-      .sound-toggle { margin-top: 9px; padding: 7px 12px; border: 0; border-radius: 999px; background: #f6d9eb; color: #68435d; font-weight: bold; cursor: pointer; }
-
-      .overlay { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; padding: 20px; background: rgba(76,48,69,.48); }
+      .stars { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
+      .star { position: absolute; bottom: -40px; color: #fff3b0; opacity: .7; animation: drift linear infinite; }
+      .star:nth-child(1) { left: 10%; font-size: 20px; animation-duration: 12s; }
+      .star:nth-child(2) { left: 28%; font-size: 14px; animation-duration: 15s; animation-delay: 2s; }
+      .star:nth-child(3) { left: 52%; font-size: 22px; animation-duration: 13s; animation-delay: 1s; }
+      .star:nth-child(4) { left: 76%; font-size: 17px; animation-duration: 16s; animation-delay: 3s; }
+      .star:nth-child(5) { left: 91%; font-size: 23px; animation-duration: 14s; animation-delay: 4s; }
+      @keyframes drift { to { transform: translateY(-115vh) rotate(35deg); } }
+      .game { width: min(94vw, 570px); padding: 18px; text-align: center; background: rgba(255,250,231,.92); border: 5px solid #fff9df; border-radius: 24px; box-shadow: 0 16px 40px rgba(48,50,33,.25); }
+      h1 { margin: 0 0 4px; font-size: clamp(1.35rem, 5vw, 2rem); color: #514021; }
+      .subtitle { margin: 0 0 12px; color: #6b5b3b; }
+      .score { margin-bottom: 12px; font-weight: bold; color: #5a4521; }
+      .scene { position: relative; padding: 25px 12px 12px; border: 8px solid #72543a; border-bottom-width: 12px; border-radius: 48% 48% 17px 17px / 30% 30% 17px 17px; background: linear-gradient(#668060, #91a36b 45%, #c2b078 46%, #e0c58a); box-shadow: inset 0 0 0 5px rgba(255,245,197,.45), 0 7px 0 #533e2a; transition: background .4s; }
+      .scene.moria { background: linear-gradient(#252c3b, #45475a 45%, #725b49 46%, #b18b5d); }
+      .scene.mordor { background: linear-gradient(#362b35, #663f3c 45%, #9a543b 46%, #d17a43); }
+      .region { position: absolute; top: 4px; left: 50%; transform: translateX(-50%); color: #fff5d6; font-size: .78rem; font-weight: bold; letter-spacing: 1px; white-space: nowrap; }
+      .board { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 5px; padding: 9px; border-radius: 14px; background: rgba(243,229,190,.9); }
+      .cell { aspect-ratio: 1; min-width: 0; display: grid; place-items: center; border-radius: 9px; font-size: clamp(1.1rem, 6vw, 2rem); background: linear-gradient(#f7edcf, #ddc995); box-shadow: inset 0 -3px rgba(80,60,35,.12); }
+      .cell.block { background: linear-gradient(#87936a, #596c4d); }
+      .scene.moria .cell.block { background: linear-gradient(#797883, #464653); }
+      .scene.mordor .cell.block { background: linear-gradient(#875749, #573c3b); }
+      .cell.hero { background: #e7f2ce; }
+      .cell.item { background: #fff0a5; animation: glow 1s ease-in-out infinite alternate; }
+      @keyframes glow { to { box-shadow: 0 0 12px #f7cb48; } }
+      .hero-art { position: relative; display: block; width: 38px; height: 38px; border-radius: 46% 46% 40% 40%; background: linear-gradient(145deg,#f4d7ae,#c89a66); border: 2px solid #745538; animation: bob 1s ease-in-out infinite alternate; }
+      .hero-art::before { content: ""; position: absolute; top: -8px; left: 3px; width: 28px; height: 16px; background: #4a382c; border-radius: 80% 80% 20% 20%; }
+      .eyes { position: absolute; z-index: 1; top: 12px; left: 7px; right: 7px; display: flex; justify-content: space-between; }
+      .eye { width: 8px; height: 11px; position: relative; border-radius: 50%; background: white; border: 1px solid #332a24; animation: blink 4s infinite; transform-origin: center; }
+      .eye::after { content: ""; position: absolute; width: 3px; height: 5px; left: 2px; bottom: 1px; border-radius: 50%; background: #282522; }
+      @keyframes blink { 0%,42%,46%,100% { transform: scaleY(1); } 44% { transform: scaleY(.08); } }
+      @keyframes bob { from { transform: translateY(1px) rotate(-2deg); } to { transform: translateY(-2px) rotate(2deg); } }
+      .message { min-height: 30px; margin-top: 13px; font-weight: bold; color: #674423; }
+      .help { margin-top: 6px; font-size: .92rem; color: #645942; }
+      .sound { margin-top: 9px; padding: 7px 12px; border: 0; border-radius: 999px; background: #e7d8ad; color: #463a25; font-weight: bold; cursor: pointer; }
+      .overlay { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; padding: 20px; background: rgba(30,31,25,.58); }
       .overlay.hidden { display: none; }
-      .card { width: min(100%, 380px); padding: 28px; border: 5px solid white; border-radius: 30px; background: linear-gradient(145deg,#fff3fa,#fff2c9); box-shadow: 0 16px 50px rgba(50,25,45,.25); text-align: center; animation: card-pop .35s ease-out; }
-      .card h2 { margin: 0 0 8px; font-size: 2rem; }
-      .card p { margin: 8px 0 18px; line-height: 1.45; }
-      .card button { border: 0; border-radius: 999px; padding: 12px 22px; background: #ef8bb2; color: white; font-size: 1rem; font-weight: bold; cursor: pointer; }
-      .card button:hover { background: #dc6f9a; }
-      @keyframes card-pop { from { transform: scale(.85); opacity: .5; } to { transform: scale(1); opacity: 1; } }
-      .confetti { position: fixed; z-index: 6; pointer-events: none; font-size: 24px; animation: confetti-pop 1.4s ease-out forwards; }
-      @keyframes confetti-pop { from { transform: translateY(0) scale(.5) rotate(0); opacity: 1; } to { transform: translateY(-180px) scale(1.3) rotate(35deg); opacity: 0; } }
-      @media (max-width: 420px) { .game-shell { padding: 14px 10px; } .scene { padding: 22px 7px 8px; } .board { gap: 3px; padding: 6px; } .cell { border-radius: 8px; } .dragon-art { transform: scale(.82); } }
-      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
+      .card { width: min(100%, 390px); padding: 27px; border: 5px solid #fff7da; border-radius: 26px; background: linear-gradient(145deg,#fff8e4,#e8edce); box-shadow: 0 16px 50px rgba(0,0,0,.3); text-align: center; animation: pop .35s ease-out; }
+      .card h2 { margin: 0 0 8px; color: #514021; }
+      .card p { line-height: 1.5; }
+      .card button { border: 0; border-radius: 999px; padding: 12px 22px; background: #6b7848; color: white; font: bold 1rem Georgia,serif; cursor: pointer; }
+      .card button:hover { background: #526139; }
+      @keyframes pop { from { transform: scale(.85); opacity: .5; } to { transform: scale(1); opacity: 1; } }
+      .confetti { position: fixed; z-index: 6; pointer-events: none; font-size: 24px; animation: burst 1.5s ease-out forwards; }
+      @keyframes burst { to { transform: translateY(-190px) rotate(35deg) scale(1.4); opacity: 0; } }
+      @media (max-width: 420px) { .game { padding: 13px 10px; } .scene { padding: 24px 7px 8px; } .board { gap: 3px; padding: 6px; } .cell { border-radius: 7px; } }
+      @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
     </style>
   </head>
   <body>
-    <div class="hearts" aria-hidden="true"><span class="heart">♥</span><span class="heart">♥</span><span class="heart">♥</span><span class="heart">♥</span><span class="heart">♥</span></div>
-
-    <main class="game-shell">
-      <h1>🐉 Little Dragon's Chocolate Quest 🍫</h1>
-      <p class="subtitle">A sweet adventure through the Enchanted Forest!</p>
-      <div class="score" id="score">Level 1 · Chocolate: 0 / 5</div>
-      <div class="scene" id="scene">
-        <div class="cave-sign" id="caveSign">🌳 ENCHANTED FOREST 🌳</div>
-        <div class="board" id="board" aria-label="Game board"></div>
-      </div>
-      <div class="message" id="message">Meet your tiny dragon friend!</div>
-      <div class="help">Move with arrow keys or W A S D. Collect all the chocolates!</div>
-      <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="true">🔊 Sound: on</button>
+    <div class="stars" aria-hidden="true"><span class="star">✦</span><span class="star">✧</span><span class="star">✦</span><span class="star">✧</span><span class="star">✦</span></div>
+    <main class="game">
+      <h1>🧙 Middle-earth: The Ring Quest 💍</h1>
+      <p class="subtitle">A tiny adventure from the Shire to Mount Doom</p>
+      <div class="score" id="score">Level 1 · Tokens: 0 / 3</div>
+      <div class="scene" id="scene"><div class="region" id="region">🌿 THE SHIRE 🌿</div><div class="board" id="board" aria-label="Game board"></div></div>
+      <div class="message" id="message">The journey is about to begin!</div>
+      <div class="help">Use the arrow keys or W A S D to guide Frodo through each region.</div>
+      <button class="sound" id="soundButton" type="button" aria-pressed="true">🔊 Sound: on</button>
     </main>
 
     <div class="overlay" id="startOverlay" role="dialog" aria-modal="true" aria-labelledby="startTitle">
-      <div class="card">
-        <div style="font-size:3rem" aria-hidden="true">🐉💖🍫</div>
-        <h2 id="startTitle">A Sweet Adventure!</h2>
-        <p>Help the baby dragon collect chocolate in the Enchanted Forest, then explore the glittery Choco Cave in Level 2!</p>
-        <button id="startButton" type="button">Start the adventure</button>
-      </div>
+      <div class="card"><div style="font-size:3rem" aria-hidden="true">🧙💍🌋</div><h2 id="startTitle">The Ring Quest</h2><p>Guide Frodo through the Shire, the Mines of Moria, and Mordor. Gather the supplies, avoid the obstacles, and reach Mount Doom!</p><button id="startButton" type="button">Begin the journey</button></div>
     </div>
-
     <div class="overlay hidden" id="levelOverlay" role="dialog" aria-modal="true" aria-labelledby="levelTitle">
-      <div class="card">
-        <div style="font-size:3rem" aria-hidden="true">🌟🐲🌟</div>
-        <h2 id="levelTitle">Forest complete!</h2>
-        <p>You found every forest treat! The Choco Cave has even more chocolate waiting.</p>
-        <button id="levelButton" type="button">Enter Level 2</button>
-      </div>
+      <div class="card"><div style="font-size:3rem" aria-hidden="true">✨🧝✨</div><h2 id="levelTitle">The road goes ever on!</h2><p id="levelText">A new region awaits.</p><button id="levelButton" type="button">Continue journey</button></div>
     </div>
-
     <div class="overlay hidden" id="winOverlay" role="dialog" aria-modal="true" aria-labelledby="winTitle">
-      <div class="card">
-        <div style="font-size:3rem" aria-hidden="true">🎉🍫🐉</div>
-        <h2 id="winTitle">You did it!</h2>
-        <p>Your big-eyed baby dragon explored both levels and found a mountain of treats!</p>
-        <button id="playAgain" type="button">Play again</button>
-      </div>
+      <div class="card"><div style="font-size:3rem" aria-hidden="true">🌋💍🎉</div><h2 id="winTitle">The Ring is destroyed!</h2><p>The quest is complete. Middle-earth is saved, and the Shire can celebrate!</p><button id="playAgain" type="button">Play again</button></div>
     </div>
 
     <script>
       const size = 8;
       const levels = [
-        {
-          name: "ENCHANTED FOREST",
-          target: 5,
-          theme: "forest",
-          trees: [[2,1],[3,1],[5,1],[2,3],[5,3],[6,3],[1,5],[3,5],[5,5],[6,5]]
-        },
-        {
-          name: "GLITTERY CHOCO CAVE",
-          target: 8,
-          theme: "cave",
-          trees: [[1,1],[2,1],[5,1],[6,1],[3,2],[6,3],[1,4],[4,4],[2,6],[5,6]]
-        }
+        { name: "THE SHIRE", theme: "shire", target: 3, item: "🍞", obstacle: "🌳", blocks: [[2,1],[3,1],[5,1],[2,3],[5,3],[6,3],[1,5],[3,5],[5,5],[6,5]] },
+        { name: "THE MINES OF MORIA", theme: "moria", target: 5, item: "✨", obstacle: "🪨", blocks: [[1,1],[2,1],[5,1],[6,1],[3,2],[6,3],[1,4],[4,4],[2,6],[5,6]] },
+        { name: "MORDOR", theme: "mordor", target: 0, item: "💍", obstacle: "🔥", blocks: [[2,0],[2,1],[5,1],[1,3],[4,3],[6,4],[2,5],[5,5],[3,7]] }
       ];
-      const boardEl = document.getElementById("board");
-      const scoreEl = document.getElementById("score");
-      const messageEl = document.getElementById("message");
-      const sceneEl = document.getElementById("scene");
-      const caveSignEl = document.getElementById("caveSign");
-      const startOverlay = document.getElementById("startOverlay");
-      const levelOverlay = document.getElementById("levelOverlay");
-      const winOverlay = document.getElementById("winOverlay");
-      const soundToggle = document.getElementById("soundToggle");
+      const board = document.getElementById("board"), scene = document.getElementById("scene");
+      const scoreEl = document.getElementById("score"), message = document.getElementById("message"), region = document.getElementById("region");
+      const startOverlay = document.getElementById("startOverlay"), levelOverlay = document.getElementById("levelOverlay"), winOverlay = document.getElementById("winOverlay");
+      let hero = { x: 0, y: 0 }, treasure = { x: 7, y: 7 }, levelIndex = 0, collected = 0, playing = false, soundOn = true, audio;
+      const current = () => levels[levelIndex];
+      const blocked = (x,y) => current().blocks.some(([bx,by]) => bx === x && by === y);
 
-      let dragon = { x: 0, y: 0 };
-      let chocolate = { x: 7, y: 7 };
-      let levelIndex = 0;
-      let score = 0;
-      let playing = false;
-      let soundOn = true;
-      let audioContext;
-
-      function currentLevel() { return levels[levelIndex]; }
-      function isTree(x, y) { return currentLevel().trees.some(([tx, ty]) => tx === x && ty === y); }
-
-      // A tiny chirpy sound is synthesized in the browser; no audio file download is needed.
-      function playChirp(kind = "happy") {
+      function chirp(triumph = false) {
         if (!soundOn) return;
         try {
-          audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
-          if (audioContext.state === "suspended") audioContext.resume();
-          const now = audioContext.currentTime;
-          const notes = kind === "win" ? [660, 880, 1100] : [740, 990];
-          notes.forEach((frequency, index) => {
-            const oscillator = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            oscillator.type = "sine";
-            oscillator.frequency.setValueAtTime(frequency, now + index * 0.11);
-            gain.gain.setValueAtTime(0.0001, now + index * 0.11);
-            gain.gain.exponentialRampToValueAtTime(0.12, now + index * 0.11 + 0.025);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.11 + 0.16);
-            oscillator.connect(gain);
-            gain.connect(audioContext.destination);
-            oscillator.start(now + index * 0.11);
-            oscillator.stop(now + index * 0.11 + 0.17);
+          audio ||= new (window.AudioContext || window.webkitAudioContext)();
+          if (audio.state === "suspended") audio.resume();
+          const now = audio.currentTime, notes = triumph ? [523,659,784,1047] : [659,880];
+          notes.forEach((hz,i) => {
+            const osc = audio.createOscillator(), gain = audio.createGain(), start = now + i * .12;
+            osc.type = "sine"; osc.frequency.setValueAtTime(hz,start);
+            gain.gain.setValueAtTime(.0001,start); gain.gain.exponentialRampToValueAtTime(.10,start+.025); gain.gain.exponentialRampToValueAtTime(.0001,start+.18);
+            osc.connect(gain); gain.connect(audio.destination); osc.start(start); osc.stop(start+.19);
           });
-        } catch (error) {
-          // Sound is optional; the game still works if browser audio is unavailable.
+        } catch (_) { /* Optional sound; gameplay still works without it. */ }
+      }
+      function updateScore() { scoreEl.textContent = `Level ${levelIndex+1} · ${levelIndex === 2 ? "The Ring" : "Tokens"}: ${collected} / ${current().target || "Reach Mount Doom"}`; }
+      function setRegion() {
+        region.textContent = current().name;
+        scene.classList.toggle("moria", levelIndex === 1);
+        scene.classList.toggle("mordor", levelIndex === 2);
+      }
+      function placeTreasure() {
+        if (levelIndex === 2) { treasure = { x: 7, y: 7 }; return; }
+        const available=[];
+        for (let y=0;y<size;y++) for(let x=0;x<size;x++) if(!blocked(x,y) && !(hero.x===x && hero.y===y)) available.push({x,y});
+        treasure=available[Math.floor(Math.random()*available.length)];
+      }
+      function heroSprite() {
+        const el=document.createElement("span"); el.className="hero-art"; el.setAttribute("role","img"); el.setAttribute("aria-label","Frodo with blinking eyes");
+        el.innerHTML='<span class="eyes"><span class="eye"></span><span class="eye"></span></span>'; return el;
+      }
+      function draw() {
+        board.innerHTML="";
+        for(let y=0;y<size;y++) for(let x=0;x<size;x++) {
+          const cell=document.createElement("div"); cell.className="cell";
+          if(blocked(x,y)) { cell.classList.add("block"); cell.textContent=current().obstacle; }
+          else if(hero.x===x && hero.y===y) { cell.classList.add("hero"); cell.appendChild(heroSprite()); }
+          else if(treasure.x===x && treasure.y===y) { cell.classList.add("item"); cell.textContent=current().item; }
+          board.appendChild(cell);
         }
       }
-
-      function updateScore() {
-        scoreEl.textContent = `Level ${levelIndex + 1} · Chocolate: ${score} / ${currentLevel().target}`;
+      function confetti() {
+        const symbols=["✨","🌟","🍃","💍","🎉"];
+        for(let i=0;i<32;i++) { const bit=document.createElement("span"); bit.className="confetti"; bit.textContent=symbols[Math.floor(Math.random()*symbols.length)]; bit.style.left=`${Math.random()*100}vw`; bit.style.top=`${55+Math.random()*40}vh`; bit.style.animationDelay=`${Math.random()*.5}s`; document.body.appendChild(bit); setTimeout(()=>bit.remove(),2200); }
       }
-
-      function placeChocolate() {
-        const spots = [];
-        for (let y = 0; y < size; y++) {
-          for (let x = 0; x < size; x++) {
-            if (!isTree(x, y) && !(dragon.x === x && dragon.y === y)) spots.push({ x, y });
-          }
-        }
-        chocolate = spots[Math.floor(Math.random() * spots.length)];
+      function nextRegion() {
+        playing=false;
+        if(levelIndex===0) document.getElementById("levelText").textContent="The Shire's supplies are gathered. The Mines of Moria lie ahead!";
+        else document.getElementById("levelText").textContent="You made it through Moria. Now cross Mordor and reach Mount Doom!";
+        levelOverlay.classList.remove("hidden");
       }
-
-      function drawDragon() {
-        const art = document.createElement("span");
-        art.className = "dragon-art";
-        art.setAttribute("role", "img");
-        art.setAttribute("aria-label", "Cute baby dragon with big shiny blinking eyes");
-        art.innerHTML = '<span class="eyes"><span class="eye"></span><span class="eye"></span></span><span class="snout"></span><span class="cheek left"></span><span class="cheek right"></span>';
-        return art;
+      function move(dx,dy) {
+        if(!playing) return;
+        const x=hero.x+dx,y=hero.y+dy;
+        if(x<0||x>=size||y<0||y>=size||blocked(x,y)) { message.textContent="The path is blocked! Find another way, brave hobbit. 🧭"; return; }
+        hero={x,y};
+        if(x===treasure.x&&y===treasure.y) {
+          if(levelIndex===2) { playing=false; message.textContent="The One Ring is destroyed! ✨"; draw(); winOverlay.classList.remove("hidden"); chirp(true); confetti(); return; }
+          collected++; chirp(); updateScore();
+          if(collected>=current().target) { message.textContent="Region complete! The journey continues..."; draw(); nextRegion(); return; }
+          message.textContent=levelIndex===0?"You found supplies for the journey! 🍞":"A magical light guides the way! ✨"; placeTreasure();
+        } else message.textContent="One step closer to Mount Doom... 🧙";
+        draw();
       }
-
-      function renderBoard() {
-        boardEl.innerHTML = "";
-        for (let y = 0; y < size; y++) {
-          for (let x = 0; x < size; x++) {
-            const cell = document.createElement("div");
-            cell.className = "cell";
-            if (isTree(x, y)) {
-              cell.classList.add("tree");
-              cell.textContent = levelIndex === 0 ? "🌳" : "💎";
-              cell.setAttribute("aria-label", levelIndex === 0 ? "Tree" : "Cave crystal");
-            } else if (dragon.x === x && dragon.y === y) {
-              cell.classList.add("dragon-cell");
-              cell.appendChild(drawDragon());
-            } else if (chocolate.x === x && chocolate.y === y) {
-              cell.classList.add("choco-cell");
-              cell.textContent = "🍫";
-              cell.setAttribute("aria-label", "Chocolate");
-            } else {
-              cell.classList.add("empty");
-            }
-            boardEl.appendChild(cell);
-          }
-        }
+      function beginLevel(index) {
+        levelIndex=index; collected=0; hero={x:0,y:0}; playing=true; setRegion(); updateScore(); placeTreasure(); draw();
+        message.textContent=index===2?"The Ring is ahead. Reach Mount Doom! 🌋":"Find the supplies hidden in this region!";
       }
-
-      function setLevelTheme() {
-        sceneEl.classList.toggle("level-two", levelIndex === 1);
-        caveSignEl.textContent = levelIndex === 0 ? "🌳 ENCHANTED FOREST 🌳" : "✨ GLITTERY CHOCO CAVE ✨";
-      }
-
-      function celebrate() {
-        const treats = ["💖", "✨", "🍫", "🌟", "💕", "🎉"];
-        for (let i = 0; i < 32; i++) {
-          const bit = document.createElement("span");
-          bit.className = "confetti";
-          bit.textContent = treats[Math.floor(Math.random() * treats.length)];
-          bit.style.left = `${Math.random() * 100}vw`;
-          bit.style.top = `${55 + Math.random() * 40}vh`;
-          bit.style.animationDelay = `${Math.random() * 0.6}s`;
-          document.body.appendChild(bit);
-          setTimeout(() => bit.remove(), 2200);
-        }
-      }
-
-      function moveDragon(dx, dy) {
-        if (!playing) return;
-        const nextX = dragon.x + dx;
-        const nextY = dragon.y + dy;
-        if (nextX < 0 || nextX >= size || nextY < 0 || nextY >= size || isTree(nextX, nextY)) {
-          messageEl.textContent = levelIndex === 0 ? "A tree is in the way! Try another path, little dragon. 🌳" : "A crystal blocks the way! Find another path. 💎";
-          return;
-        }
-
-        dragon = { x: nextX, y: nextY };
-        if (dragon.x === chocolate.x && dragon.y === chocolate.y) {
-          score += 1;
-          updateScore();
-          playChirp();
-          if (score >= currentLevel().target) {
-            playing = false;
-            renderBoard();
-            if (levelIndex === 0) {
-              messageEl.textContent = "Forest complete! The Choco Cave is calling! ✨";
-              levelOverlay.classList.remove("hidden");
-            } else {
-              messageEl.textContent = "Hooray! The dragon found all the cave chocolate! 🍫";
-              winOverlay.classList.remove("hidden");
-              playChirp("win");
-              celebrate();
-            }
-            return;
-          }
-          messageEl.textContent = "Yum! The baby dragon found chocolate! 💖";
-          placeChocolate();
-        } else {
-          messageEl.textContent = "The tiny dragon is waddling on... 🐾";
-        }
-        renderBoard();
-      }
-
-      function startGame() {
-        levelIndex = 0;
-        score = 0;
-        dragon = { x: 0, y: 0 };
-        playing = true;
-        startOverlay.classList.add("hidden");
-        levelOverlay.classList.add("hidden");
-        winOverlay.classList.add("hidden");
-        setLevelTheme();
-        updateScore();
-        messageEl.textContent = "Find 5 chocolates in the enchanted forest! 💖";
-        placeChocolate();
-        renderBoard();
-        playChirp();
-      }
-
-      function beginLevelTwo() {
-        levelIndex = 1;
-        score = 0;
-        dragon = { x: 0, y: 0 };
-        playing = true;
-        levelOverlay.classList.add("hidden");
-        setLevelTheme();
-        updateScore();
-        messageEl.textContent = "Level 2! Find 8 chocolates in the glittery cave! 💎🍫";
-        placeChocolate();
-        renderBoard();
-        playChirp("win");
-      }
-
-      document.addEventListener("keydown", (event) => {
-        const key = event.key.toLowerCase();
-        const moves = {
-          arrowup: [0, -1], w: [0, -1], arrowdown: [0, 1], s: [0, 1],
-          arrowleft: [-1, 0], a: [-1, 0], arrowright: [1, 0], d: [1, 0]
-        };
-        if (moves[key] && playing) {
-          event.preventDefault();
-          moveDragon(...moves[key]);
-        }
+      function startGame() { startOverlay.classList.add("hidden"); levelOverlay.classList.add("hidden"); winOverlay.classList.add("hidden"); beginLevel(0); chirp(); }
+      document.addEventListener("keydown",event=>{
+        const keys={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]};
+        const key=event.key.toLowerCase(); if(keys[key]&&playing){event.preventDefault();move(...keys[key]);}
       });
-
-      document.getElementById("startButton").addEventListener("click", startGame);
-      document.getElementById("levelButton").addEventListener("click", beginLevelTwo);
-      document.getElementById("playAgain").addEventListener("click", startGame);
-      soundToggle.addEventListener("click", () => {
-        soundOn = !soundOn;
-        soundToggle.textContent = soundOn ? "🔊 Sound: on" : "🔇 Sound: off";
-        soundToggle.setAttribute("aria-pressed", String(soundOn));
-        if (soundOn) playChirp();
-      });
-
-      setLevelTheme();
-      updateScore();
-      placeChocolate();
-      renderBoard();
+      document.getElementById("startButton").addEventListener("click",startGame);
+      document.getElementById("levelButton").addEventListener("click",()=>{levelOverlay.classList.add("hidden");beginLevel(levelIndex+1);chirp(true);});
+      document.getElementById("playAgain").addEventListener("click",startGame);
+      document.getElementById("soundButton").addEventListener("click",event=>{soundOn=!soundOn;event.currentTarget.textContent=soundOn?"🔊 Sound: on":"🔇 Sound: off";event.currentTarget.setAttribute("aria-pressed",String(soundOn));if(soundOn)chirp();});
+      setRegion(); updateScore(); placeTreasure(); draw();
     </script>
   </body>
 </html>
