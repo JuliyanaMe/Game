@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dragon Loves Chocolate</title>
+    <title>Little Dragon's Chocolate Quest</title>
     <style>
       * { box-sizing: border-box; }
 
@@ -12,17 +12,17 @@
         min-height: 100vh;
         display: grid;
         place-items: center;
-        background: linear-gradient(#dff9ff, #ffe8f4);
+        background: linear-gradient(#fff0f8, #dff9ff, #fff8d6);
         font-family: Arial, sans-serif;
-        color: #3a2c2f;
+        color: #4b2e39;
       }
 
       .game-shell {
-        background: rgba(255, 255, 255, 0.45);
-        border: 4px solid #ffffff;
-        border-radius: 24px;
-        box-shadow: 0 18px 40px rgba(111, 66, 98, 0.18);
-        padding: 20px 20px 16px;
+        background: rgba(255, 255, 255, 0.52);
+        border: 4px solid #fff;
+        border-radius: 28px;
+        box-shadow: 0 16px 38px rgba(138, 99, 126, 0.22);
+        padding: 18px 18px 16px;
         text-align: center;
       }
 
@@ -33,8 +33,8 @@
 
       .score {
         font-weight: bold;
-        color: #6d4a69;
-        margin-bottom: 10px;
+        color: #77556d;
+        margin-bottom: 12px;
       }
 
       .board {
@@ -42,10 +42,10 @@
         grid-template-columns: repeat(8, 52px);
         grid-template-rows: repeat(8, 52px);
         gap: 6px;
-        background: #ffffff;
+        background: #fffaf5;
         padding: 10px;
         border-radius: 18px;
-        border: 3px solid #e7d9ff;
+        border: 3px solid #f7d7ee;
       }
 
       .cell {
@@ -55,38 +55,38 @@
         display: grid;
         place-items: center;
         font-size: 2rem;
-        background: linear-gradient(#f1fff5, #dff8ea);
+        background: linear-gradient(#f7fff8, #e4f7ff);
       }
 
       .wall {
-        background: linear-gradient(#b8a18a, #8c7d6e);
+        background: linear-gradient(#d8d0ff, #b7b0ea);
       }
 
       .goal {
-        background: linear-gradient(#ffe9a8, #ffd166);
+        background: linear-gradient(#ffeeb5, #ffd36a);
       }
 
       .message {
-        min-height: 28px;
+        min-height: 30px;
         margin-top: 12px;
         font-weight: bold;
-        color: #7a3d30;
+        color: #7b4651;
       }
 
       .help {
         margin-top: 8px;
         font-size: 0.95rem;
-        color: #5f4765;
+        color: #61505f;
       }
     </style>
   </head>
   <body>
     <div class="game-shell">
-      <h1>🐉 Dragon Loves Chocolate 🍫</h1>
-      <div class="score" id="score">Chocolate collected: 0</div>
+      <h1>🐲 Tiny Dragon & Chocolate Quest 🍫</h1>
+      <div class="score" id="score">Chocolate bites: 0</div>
       <div class="board" id="board"></div>
-      <div class="message" id="message">Use arrow keys or WASD to move.</div>
-      <div class="help">Reach the chocolate without hitting the rocks.</div>
+      <div class="message" id="message">Aww, the little dragon is looking for chocolate! 💖</div>
+      <div class="help">Use arrow keys or W A S D to guide the baby dragon.</div>
     </div>
 
     <script>
@@ -135,9 +135,9 @@
 
             if (isWall(x, y)) {
               cell.classList.add("wall");
-              cell.textContent = "🪨";
+              cell.textContent = "🌼";
             } else if (dragon.x === x && dragon.y === y) {
-              cell.textContent = "🐉";
+              cell.textContent = "🐲";
             } else if (chocolate.x === x && chocolate.y === y) {
               cell.classList.add("goal");
               cell.textContent = "🍫";
@@ -159,7 +159,7 @@
           nextY >= size ||
           isWall(nextX, nextY)
         ) {
-          messageEl.textContent = "The dragon bumped into a rock! Try another way.";
+          messageEl.textContent = "Oh no! The tiny dragon bumped into the flower patch. Try again! 🥺";
           return;
         }
 
@@ -168,11 +168,11 @@
 
         if (dragon.x === chocolate.x && dragon.y === chocolate.y) {
           score += 1;
-          scoreEl.textContent = `Chocolate collected: ${score}`;
-          messageEl.textContent = "Yay! The dragon got the chocolate! 🍫✨";
+          scoreEl.textContent = `Chocolate bites: ${score}`;
+          messageEl.textContent = "Yay! The cute dragon got the chocolate! 💖✨";
           placeChocolate();
         } else {
-          messageEl.textContent = "The dragon is on the move...";
+          messageEl.textContent = "The tiny dragon is waddling closer... 🐾";
         }
 
         renderBoard();

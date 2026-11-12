@@ -1,13 +1,13 @@
-# Dragon Loves Chocolate
+# Tiny Dragon & Chocolate Quest
 
-A tiny cute game where a dragon tries to reach a chocolate treat.
+A cute little browser game where a tiny dragon searches for chocolate.
 
-## How to open it
+## How to play
 
-1. Open the `index.html` file in this folder.
-2. Double-click it, or open it with a browser.
-3. Use the arrow keys or `W A S D` to move the dragon.
+1. Open `index.html` in a browser.
+2. Use the arrow keys or `W A S D` to move the dragon.
+3. Help the dragon reach the chocolate without bumping into the flower patch.
 
 ## Goal
 
-Guide the dragon to the chocolate while avoiding the rocks.
+Collect as many chocolate bites as possible while staying cute and happy.
