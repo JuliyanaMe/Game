@@ -3,315 +3,178 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Little Dragon's Chocolate Cave</title>
+    <title>Little Dragon's Chocolate Adventure</title>
     <style>
       * { box-sizing: border-box; }
-
       body {
-        margin: 0;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        overflow-x: hidden;
-        background: linear-gradient(180deg, #fff0f8, #e6f8ff 55%, #fff5d8);
-        font-family: "Trebuchet MS", Arial, sans-serif;
-        color: #4b2e39;
+        margin: 0; min-height: 100vh; display: grid; place-items: center;
+        overflow-x: hidden; background: linear-gradient(180deg, #fff0f8, #e6f8ff 55%, #fff5d8);
+        font-family: "Trebuchet MS", Arial, sans-serif; color: #4b2e39;
       }
-
-      .hearts {
-        position: fixed;
-        inset: 0;
-        overflow: hidden;
-        pointer-events: none;
-        z-index: -1;
-      }
-
-      .heart {
-        position: absolute;
-        bottom: -50px;
-        color: #f5a8ca;
-        opacity: 0.55;
-        animation: float-up linear infinite;
-      }
-
+      .hearts { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
+      .heart { position: absolute; bottom: -50px; color: #f5a8ca; opacity: .55; animation: float-up linear infinite; }
       .heart:nth-child(1) { left: 8%; font-size: 24px; animation-duration: 10s; }
       .heart:nth-child(2) { left: 23%; font-size: 18px; animation-duration: 13s; animation-delay: 2s; }
       .heart:nth-child(3) { left: 45%; font-size: 28px; animation-duration: 12s; animation-delay: 1s; }
       .heart:nth-child(4) { left: 68%; font-size: 20px; animation-duration: 14s; animation-delay: 3s; }
       .heart:nth-child(5) { left: 88%; font-size: 30px; animation-duration: 11s; animation-delay: 4s; }
+      @keyframes float-up { from { transform: translateY(0) rotate(0); } to { transform: translateY(-115vh) rotate(25deg); } }
 
-      @keyframes float-up {
-        from { transform: translateY(0) rotate(0deg); }
-        to { transform: translateY(-115vh) rotate(25deg); }
-      }
-
-      .game-shell {
-        width: min(94vw, 560px);
-        background: rgba(255, 255, 255, 0.82);
-        border: 4px solid #fff;
-        border-radius: 28px;
-        box-shadow: 0 16px 38px rgba(138, 99, 126, 0.22);
-        padding: 18px 18px 16px;
-        text-align: center;
-      }
-
+      .game-shell { width: min(94vw, 560px); background: rgba(255,255,255,.86); border: 4px solid white; border-radius: 28px; box-shadow: 0 16px 38px rgba(138,99,126,.22); padding: 18px; text-align: center; }
       h1 { margin: 0 0 6px; font-size: clamp(1.35rem, 5vw, 2rem); }
       .subtitle { margin: 0 0 10px; color: #805c75; }
       .score { font-weight: bold; color: #77556d; margin-bottom: 12px; }
-
-      .scene {
-        position: relative;
-        padding: 22px 12px 12px;
-        border: 7px solid #9a6b55;
-        border-bottom-width: 12px;
-        border-radius: 48% 48% 18px 18px / 32% 32% 18px 18px;
-        background: linear-gradient(#714d68, #a77764 42%, #d69b72 43%, #f6d79a);
-        box-shadow: inset 0 0 0 5px rgba(255, 222, 179, 0.48), 0 8px 0 #75513f;
-      }
-
-      .cave-sign {
-        position: absolute;
-        top: 3px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 0.78rem;
-        font-weight: bold;
-        color: #fff5d6;
-        white-space: nowrap;
-        letter-spacing: 1px;
-      }
-
-      .board {
-        display: grid;
-        grid-template-columns: repeat(8, minmax(0, 1fr));
-        gap: 5px;
-        padding: 9px;
-        border-radius: 16px;
-        background: rgba(255, 239, 213, 0.9);
-      }
-
-      .cell {
-        aspect-ratio: 1;
-        min-width: 0;
-        border-radius: 11px;
-        display: grid;
-        place-items: center;
-        background: linear-gradient(#fff9e9, #f8dcae);
-        font-size: clamp(1.1rem, 6vw, 2rem);
-        box-shadow: inset 0 -3px rgba(148, 97, 63, 0.12);
-      }
-
+      .scene { position: relative; padding: 22px 12px 12px; border: 7px solid #9a6b55; border-bottom-width: 12px; border-radius: 48% 48% 18px 18px / 32% 32% 18px 18px; background: linear-gradient(#714d68, #a77764 42%, #d69b72 43%, #f6d79a); box-shadow: inset 0 0 0 5px rgba(255,222,179,.48), 0 8px 0 #75513f; transition: background .4s; }
+      .scene.level-two { background: linear-gradient(#30294e, #584064 42%, #805b70 43%, #d69b72); }
+      .cave-sign { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: .78rem; font-weight: bold; color: #fff5d6; white-space: nowrap; letter-spacing: 1px; }
+      .board { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 5px; padding: 9px; border-radius: 16px; background: rgba(255,239,213,.9); }
+      .cell { aspect-ratio: 1; min-width: 0; border-radius: 11px; display: grid; place-items: center; background: linear-gradient(#fff9e9, #f8dcae); font-size: clamp(1.1rem, 6vw, 2rem); box-shadow: inset 0 -3px rgba(148,97,63,.12); }
       .cell.tree { background: linear-gradient(#d7f0c4, #a8d88d); }
       .cell.empty { background: linear-gradient(#ffe8c8, #f6d4a0); }
       .cell.dragon-cell { background: #ffe4ef; }
-      .cell.choco-cell { background: #fff0a8; }
+      .cell.choco-cell { background: #fff0a8; animation: chocolate-glow 1s ease-in-out infinite alternate; }
+      @keyframes chocolate-glow { to { box-shadow: 0 0 12px #ffd65a; } }
 
-      .dragon-art {
-        position: relative;
-        display: block;
-        width: 40px;
-        height: 38px;
-        border-radius: 48% 48% 44% 44%;
-        background: linear-gradient(145deg, #b8f1b3, #73cf91);
-        border: 2px solid #55a971;
-        box-shadow: 0 3px 0 rgba(53, 121, 76, 0.2);
-        animation: dragon-bob 1s ease-in-out infinite alternate;
-      }
-
-      .dragon-art::before,
-      .dragon-art::after {
-        content: "";
-        position: absolute;
-        top: -7px;
-        width: 11px;
-        height: 13px;
-        background: #ffb3cb;
-        border: 2px solid #55a971;
-        border-bottom: 0;
-        border-radius: 70% 70% 0 0;
-      }
-      .dragon-art::before { left: 4px; transform: rotate(-15deg); }
-      .dragon-art::after { right: 4px; transform: rotate(15deg); }
-
-      .eyes {
-        position: absolute;
-        top: 10px;
-        left: 7px;
-        right: 7px;
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .eye {
-        position: relative;
-        width: 10px;
-        height: 13px;
-        border-radius: 50%;
-        background: #fff;
-        border: 1px solid #3c4650;
-      }
-      .eye::before {
-        content: "";
-        position: absolute;
-        width: 5px;
-        height: 7px;
-        left: 2px;
-        bottom: 1px;
-        border-radius: 50%;
-        background: #273443;
-      }
-      .eye::after {
-        content: "";
-        position: absolute;
-        width: 3px;
-        height: 3px;
-        left: 2px;
-        top: 1px;
-        border-radius: 50%;
-        background: white;
-      }
-
-      .snout {
-        position: absolute;
-        width: 12px;
-        height: 8px;
-        left: 12px;
-        bottom: 4px;
-        border-radius: 50%;
-        background: #d7f7cb;
-      }
-      .snout::after {
-        content: "";
-        position: absolute;
-        width: 4px;
-        height: 3px;
-        left: 4px;
-        top: 1px;
-        border-radius: 50%;
-        background: #527b65;
-      }
-      .cheek {
-        position: absolute;
-        top: 21px;
-        width: 6px;
-        height: 4px;
-        border-radius: 50%;
-        background: #ff9eb8;
-      }
-      .cheek.left { left: 3px; }
-      .cheek.right { right: 3px; }
-
-      @keyframes dragon-bob {
-        from { transform: translateY(1px) rotate(-3deg); }
-        to { transform: translateY(-2px) rotate(3deg); }
-      }
-
+      .dragon-art { position: relative; display: block; width: 40px; height: 38px; border-radius: 48% 48% 44% 44%; background: linear-gradient(145deg,#b8f1b3,#73cf91); border: 2px solid #55a971; box-shadow: 0 3px 0 rgba(53,121,76,.2); animation: dragon-bob 1s ease-in-out infinite alternate; }
+      .dragon-art::before, .dragon-art::after { content: ""; position: absolute; top: -7px; width: 11px; height: 13px; background: #ffb3cb; border: 2px solid #55a971; border-bottom: 0; border-radius: 70% 70% 0 0; }
+      .dragon-art::before { left: 4px; transform: rotate(-15deg); } .dragon-art::after { right: 4px; transform: rotate(15deg); }
+      .eyes { position: absolute; top: 10px; left: 7px; right: 7px; display: flex; justify-content: space-between; }
+      .eye { position: relative; width: 10px; height: 13px; border-radius: 50%; background: white; border: 1px solid #3c4650; animation: blink 4s infinite; transform-origin: center; }
+      .eye:nth-child(2) { animation-delay: .08s; }
+      .eye::before { content: ""; position: absolute; width: 5px; height: 7px; left: 2px; bottom: 1px; border-radius: 50%; background: #273443; }
+      .eye::after { content: ""; position: absolute; width: 3px; height: 3px; left: 2px; top: 1px; border-radius: 50%; background: white; }
+      @keyframes blink { 0%, 42%, 46%, 100% { transform: scaleY(1); } 44% { transform: scaleY(.08); } }
+      .snout { position: absolute; width: 12px; height: 8px; left: 12px; bottom: 4px; border-radius: 50%; background: #d7f7cb; }
+      .snout::after { content: ""; position: absolute; width: 4px; height: 3px; left: 4px; top: 1px; border-radius: 50%; background: #527b65; }
+      .cheek { position: absolute; top: 21px; width: 6px; height: 4px; border-radius: 50%; background: #ff9eb8; }
+      .cheek.left { left: 3px; } .cheek.right { right: 3px; }
+      @keyframes dragon-bob { from { transform: translateY(1px) rotate(-3deg); } to { transform: translateY(-2px) rotate(3deg); } }
       .message { min-height: 30px; margin-top: 13px; font-weight: bold; color: #7b4651; }
-      .help { margin-top: 6px; font-size: 0.92rem; color: #61505f; }
+      .help { margin-top: 6px; font-size: .92rem; color: #61505f; }
+      .sound-toggle { margin-top: 9px; padding: 7px 12px; border: 0; border-radius: 999px; background: #f6d9eb; color: #68435d; font-weight: bold; cursor: pointer; }
 
-      .win-banner {
-        display: none;
-        position: fixed;
-        inset: 0;
-        z-index: 5;
-        place-items: center;
-        padding: 20px;
-        background: rgba(76, 48, 69, 0.42);
-      }
-      .win-banner.show { display: grid; animation: fade-in 0.3s ease-out; }
-      .win-card {
-        max-width: 360px;
-        padding: 28px;
-        border: 5px solid white;
-        border-radius: 30px;
-        background: linear-gradient(145deg, #fff3fa, #fff2c9);
-        box-shadow: 0 16px 50px rgba(50, 25, 45, 0.25);
-        animation: celebrate 0.7s ease-in-out infinite alternate;
-      }
-      .win-card h2 { margin: 0 0 8px; font-size: 2rem; }
-      .win-card p { margin: 8px 0 18px; }
-      .win-card button {
-        border: 0;
-        border-radius: 999px;
-        padding: 12px 22px;
-        background: #ef8bb2;
-        color: white;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      .win-card button:hover { background: #dc6f9a; }
-
-      .confetti {
-        position: fixed;
-        z-index: 6;
-        pointer-events: none;
-        font-size: 24px;
-        animation: confetti-pop 1.4s ease-out forwards;
-      }
-      @keyframes confetti-pop {
-        from { transform: translateY(0) scale(0.5) rotate(0); opacity: 1; }
-        to { transform: translateY(-180px) scale(1.3) rotate(35deg); opacity: 0; }
-      }
-      @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-      @keyframes celebrate { from { transform: rotate(-2deg) scale(1); } to { transform: rotate(2deg) scale(1.04); } }
-
-      @media (max-width: 420px) {
-        .game-shell { padding: 14px 10px; }
-        .scene { padding: 22px 7px 8px; }
-        .board { gap: 3px; padding: 6px; }
-        .cell { border-radius: 8px; }
-        .dragon-art { transform: scale(0.82); }
-      }
+      .overlay { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; padding: 20px; background: rgba(76,48,69,.48); }
+      .overlay.hidden { display: none; }
+      .card { width: min(100%, 380px); padding: 28px; border: 5px solid white; border-radius: 30px; background: linear-gradient(145deg,#fff3fa,#fff2c9); box-shadow: 0 16px 50px rgba(50,25,45,.25); text-align: center; animation: card-pop .35s ease-out; }
+      .card h2 { margin: 0 0 8px; font-size: 2rem; }
+      .card p { margin: 8px 0 18px; line-height: 1.45; }
+      .card button { border: 0; border-radius: 999px; padding: 12px 22px; background: #ef8bb2; color: white; font-size: 1rem; font-weight: bold; cursor: pointer; }
+      .card button:hover { background: #dc6f9a; }
+      @keyframes card-pop { from { transform: scale(.85); opacity: .5; } to { transform: scale(1); opacity: 1; } }
+      .confetti { position: fixed; z-index: 6; pointer-events: none; font-size: 24px; animation: confetti-pop 1.4s ease-out forwards; }
+      @keyframes confetti-pop { from { transform: translateY(0) scale(.5) rotate(0); opacity: 1; } to { transform: translateY(-180px) scale(1.3) rotate(35deg); opacity: 0; } }
+      @media (max-width: 420px) { .game-shell { padding: 14px 10px; } .scene { padding: 22px 7px 8px; } .board { gap: 3px; padding: 6px; } .cell { border-radius: 8px; } .dragon-art { transform: scale(.82); } }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
     </style>
   </head>
   <body>
-    <div class="hearts" aria-hidden="true">
-      <span class="heart">♥</span><span class="heart">♥</span><span class="heart">♥</span>
-      <span class="heart">♥</span><span class="heart">♥</span>
-    </div>
+    <div class="hearts" aria-hidden="true"><span class="heart">♥</span><span class="heart">♥</span><span class="heart">♥</span><span class="heart">♥</span><span class="heart">♥</span></div>
 
     <main class="game-shell">
-      <h1>🐉 Little Dragon's Chocolate Cave 🍫</h1>
+      <h1>🐉 Little Dragon's Chocolate Quest 🍫</h1>
       <p class="subtitle">A sweet adventure through the Enchanted Forest!</p>
-      <div class="score" id="score">Chocolate collected: 0 / 5</div>
-      <div class="scene">
-        <div class="cave-sign">🍫 CHOCO CAVE 🍫</div>
+      <div class="score" id="score">Level 1 · Chocolate: 0 / 5</div>
+      <div class="scene" id="scene">
+        <div class="cave-sign" id="caveSign">🌳 ENCHANTED FOREST 🌳</div>
         <div class="board" id="board" aria-label="Game board"></div>
       </div>
-      <div class="message" id="message">Guide your tiny friend to the chocolate! 💖</div>
-      <div class="help">Move with arrow keys or W A S D. Collect 5 chocolates to win!</div>
+      <div class="message" id="message">Meet your tiny dragon friend!</div>
+      <div class="help">Move with arrow keys or W A S D. Collect all the chocolates!</div>
+      <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="true">🔊 Sound: on</button>
     </main>
 
-    <div class="win-banner" id="winBanner" role="dialog" aria-modal="true" aria-labelledby="winTitle">
-      <div class="win-card">
-        <h2 id="winTitle">You did it! 🎉</h2>
-        <p>Your big-eyed baby dragon found the Choco Cave and earned a mountain of treats! 🍫🐉💖</p>
-        <button id="playAgain">Play again</button>
+    <div class="overlay" id="startOverlay" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+      <div class="card">
+        <div style="font-size:3rem" aria-hidden="true">🐉💖🍫</div>
+        <h2 id="startTitle">A Sweet Adventure!</h2>
+        <p>Help the baby dragon collect chocolate in the Enchanted Forest, then explore the glittery Choco Cave in Level 2!</p>
+        <button id="startButton" type="button">Start the adventure</button>
+      </div>
+    </div>
+
+    <div class="overlay hidden" id="levelOverlay" role="dialog" aria-modal="true" aria-labelledby="levelTitle">
+      <div class="card">
+        <div style="font-size:3rem" aria-hidden="true">🌟🐲🌟</div>
+        <h2 id="levelTitle">Forest complete!</h2>
+        <p>You found every forest treat! The Choco Cave has even more chocolate waiting.</p>
+        <button id="levelButton" type="button">Enter Level 2</button>
+      </div>
+    </div>
+
+    <div class="overlay hidden" id="winOverlay" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+      <div class="card">
+        <div style="font-size:3rem" aria-hidden="true">🎉🍫🐉</div>
+        <h2 id="winTitle">You did it!</h2>
+        <p>Your big-eyed baby dragon explored both levels and found a mountain of treats!</p>
+        <button id="playAgain" type="button">Play again</button>
       </div>
     </div>
 
     <script>
       const size = 8;
-      const winningScore = 5;
+      const levels = [
+        {
+          name: "ENCHANTED FOREST",
+          target: 5,
+          theme: "forest",
+          trees: [[2,1],[3,1],[5,1],[2,3],[5,3],[6,3],[1,5],[3,5],[5,5],[6,5]]
+        },
+        {
+          name: "GLITTERY CHOCO CAVE",
+          target: 8,
+          theme: "cave",
+          trees: [[1,1],[2,1],[5,1],[6,1],[3,2],[6,3],[1,4],[4,4],[2,6],[5,6]]
+        }
+      ];
       const boardEl = document.getElementById("board");
       const scoreEl = document.getElementById("score");
       const messageEl = document.getElementById("message");
-      const winBanner = document.getElementById("winBanner");
+      const sceneEl = document.getElementById("scene");
+      const caveSignEl = document.getElementById("caveSign");
+      const startOverlay = document.getElementById("startOverlay");
+      const levelOverlay = document.getElementById("levelOverlay");
+      const winOverlay = document.getElementById("winOverlay");
+      const soundToggle = document.getElementById("soundToggle");
+
       let dragon = { x: 0, y: 0 };
       let chocolate = { x: 7, y: 7 };
+      let levelIndex = 0;
       let score = 0;
-      let gameWon = false;
+      let playing = false;
+      let soundOn = true;
+      let audioContext;
 
-      const trees = [
-        { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 5, y: 1 },
-        { x: 2, y: 3 }, { x: 5, y: 3 }, { x: 6, y: 3 },
-        { x: 1, y: 5 }, { x: 3, y: 5 }, { x: 5, y: 5 },
-        { x: 6, y: 5 }
-      ];
+      function currentLevel() { return levels[levelIndex]; }
+      function isTree(x, y) { return currentLevel().trees.some(([tx, ty]) => tx === x && ty === y); }
 
-      function isTree(x, y) {
-        return trees.some((tree) => tree.x === x && tree.y === y);
+      // A tiny chirpy sound is synthesized in the browser; no audio file download is needed.
+      function playChirp(kind = "happy") {
+        if (!soundOn) return;
+        try {
+          audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+          if (audioContext.state === "suspended") audioContext.resume();
+          const now = audioContext.currentTime;
+          const notes = kind === "win" ? [660, 880, 1100] : [740, 990];
+          notes.forEach((frequency, index) => {
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            oscillator.type = "sine";
+            oscillator.frequency.setValueAtTime(frequency, now + index * 0.11);
+            gain.gain.setValueAtTime(0.0001, now + index * 0.11);
+            gain.gain.exponentialRampToValueAtTime(0.12, now + index * 0.11 + 0.025);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.11 + 0.16);
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+            oscillator.start(now + index * 0.11);
+            oscillator.stop(now + index * 0.11 + 0.17);
+          });
+        } catch (error) {
+          // Sound is optional; the game still works if browser audio is unavailable.
+        }
+      }
+
+      function updateScore() {
+        scoreEl.textContent = `Level ${levelIndex + 1} · Chocolate: ${score} / ${currentLevel().target}`;
       }
 
       function placeChocolate() {
@@ -325,12 +188,12 @@
       }
 
       function drawDragon() {
-        const dragonArt = document.createElement("span");
-        dragonArt.className = "dragon-art";
-        dragonArt.setAttribute("role", "img");
-        dragonArt.setAttribute("aria-label", "Cute baby dragon with big shiny eyes");
-        dragonArt.innerHTML = '<span class="eyes"><span class="eye"></span><span class="eye"></span></span><span class="snout"></span><span class="cheek left"></span><span class="cheek right"></span>';
-        return dragonArt;
+        const art = document.createElement("span");
+        art.className = "dragon-art";
+        art.setAttribute("role", "img");
+        art.setAttribute("aria-label", "Cute baby dragon with big shiny blinking eyes");
+        art.innerHTML = '<span class="eyes"><span class="eye"></span><span class="eye"></span></span><span class="snout"></span><span class="cheek left"></span><span class="cheek right"></span>';
+        return art;
       }
 
       function renderBoard() {
@@ -341,8 +204,8 @@
             cell.className = "cell";
             if (isTree(x, y)) {
               cell.classList.add("tree");
-              cell.textContent = "🌳";
-              cell.setAttribute("aria-label", "Tree");
+              cell.textContent = levelIndex === 0 ? "🌳" : "💎";
+              cell.setAttribute("aria-label", levelIndex === 0 ? "Tree" : "Cave crystal");
             } else if (dragon.x === x && dragon.y === y) {
               cell.classList.add("dragon-cell");
               cell.appendChild(drawDragon());
@@ -358,9 +221,14 @@
         }
       }
 
+      function setLevelTheme() {
+        sceneEl.classList.toggle("level-two", levelIndex === 1);
+        caveSignEl.textContent = levelIndex === 0 ? "🌳 ENCHANTED FOREST 🌳" : "✨ GLITTERY CHOCO CAVE ✨";
+      }
+
       function celebrate() {
         const treats = ["💖", "✨", "🍫", "🌟", "💕", "🎉"];
-        for (let i = 0; i < 28; i++) {
+        for (let i = 0; i < 32; i++) {
           const bit = document.createElement("span");
           bit.className = "confetti";
           bit.textContent = treats[Math.floor(Math.random() * treats.length)];
@@ -373,61 +241,95 @@
       }
 
       function moveDragon(dx, dy) {
-        if (gameWon) return;
+        if (!playing) return;
         const nextX = dragon.x + dx;
         const nextY = dragon.y + dy;
-
         if (nextX < 0 || nextX >= size || nextY < 0 || nextY >= size || isTree(nextX, nextY)) {
-          messageEl.textContent = "Oops! A tree is in the way. Try another path, little dragon! 🌳";
+          messageEl.textContent = levelIndex === 0 ? "A tree is in the way! Try another path, little dragon. 🌳" : "A crystal blocks the way! Find another path. 💎";
           return;
         }
 
         dragon = { x: nextX, y: nextY };
         if (dragon.x === chocolate.x && dragon.y === chocolate.y) {
           score += 1;
-          scoreEl.textContent = `Chocolate collected: ${score} / ${winningScore}`;
-          if (score >= winningScore) {
-            gameWon = true;
-            messageEl.textContent = "Hooray! The Choco Cave is all yours! 🍫✨";
+          updateScore();
+          playChirp();
+          if (score >= currentLevel().target) {
+            playing = false;
             renderBoard();
-            winBanner.classList.add("show");
-            celebrate();
+            if (levelIndex === 0) {
+              messageEl.textContent = "Forest complete! The Choco Cave is calling! ✨";
+              levelOverlay.classList.remove("hidden");
+            } else {
+              messageEl.textContent = "Hooray! The dragon found all the cave chocolate! 🍫";
+              winOverlay.classList.remove("hidden");
+              playChirp("win");
+              celebrate();
+            }
             return;
           }
-          messageEl.textContent = "Yum! The dragon found a chocolate! Keep going! 💖";
+          messageEl.textContent = "Yum! The baby dragon found chocolate! 💖";
           placeChocolate();
         } else {
-          messageEl.textContent = "The tiny dragon is waddling through the forest... 🐾";
+          messageEl.textContent = "The tiny dragon is waddling on... 🐾";
         }
         renderBoard();
       }
 
-      function resetGame() {
-        dragon = { x: 0, y: 0 };
+      function startGame() {
+        levelIndex = 0;
         score = 0;
-        gameWon = false;
-        scoreEl.textContent = `Chocolate collected: 0 / ${winningScore}`;
-        messageEl.textContent = "Guide your tiny friend to the chocolate! 💖";
-        winBanner.classList.remove("show");
+        dragon = { x: 0, y: 0 };
+        playing = true;
+        startOverlay.classList.add("hidden");
+        levelOverlay.classList.add("hidden");
+        winOverlay.classList.add("hidden");
+        setLevelTheme();
+        updateScore();
+        messageEl.textContent = "Find 5 chocolates in the enchanted forest! 💖";
         placeChocolate();
         renderBoard();
+        playChirp();
+      }
+
+      function beginLevelTwo() {
+        levelIndex = 1;
+        score = 0;
+        dragon = { x: 0, y: 0 };
+        playing = true;
+        levelOverlay.classList.add("hidden");
+        setLevelTheme();
+        updateScore();
+        messageEl.textContent = "Level 2! Find 8 chocolates in the glittery cave! 💎🍫";
+        placeChocolate();
+        renderBoard();
+        playChirp("win");
       }
 
       document.addEventListener("keydown", (event) => {
         const key = event.key.toLowerCase();
         const moves = {
-          arrowup: [0, -1], w: [0, -1],
-          arrowdown: [0, 1], s: [0, 1],
-          arrowleft: [-1, 0], a: [-1, 0],
-          arrowright: [1, 0], d: [1, 0]
+          arrowup: [0, -1], w: [0, -1], arrowdown: [0, 1], s: [0, 1],
+          arrowleft: [-1, 0], a: [-1, 0], arrowright: [1, 0], d: [1, 0]
         };
-        if (moves[key]) {
+        if (moves[key] && playing) {
           event.preventDefault();
           moveDragon(...moves[key]);
         }
       });
 
-      document.getElementById("playAgain").addEventListener("click", resetGame);
+      document.getElementById("startButton").addEventListener("click", startGame);
+      document.getElementById("levelButton").addEventListener("click", beginLevelTwo);
+      document.getElementById("playAgain").addEventListener("click", startGame);
+      soundToggle.addEventListener("click", () => {
+        soundOn = !soundOn;
+        soundToggle.textContent = soundOn ? "🔊 Sound: on" : "🔇 Sound: off";
+        soundToggle.setAttribute("aria-pressed", String(soundOn));
+        if (soundOn) playChirp();
+      });
+
+      setLevelTheme();
+      updateScore();
       placeChocolate();
       renderBoard();
     </script>
